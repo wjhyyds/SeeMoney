@@ -20,9 +20,11 @@ class GNN_NET(torch.nn.Module):
     def decode(self, z, edge_label_index):
         src = z[edge_label_index[0]]
         dst = z[edge_label_index[1]]
-        # 使用注意力机制计算边的预测
-        attention = torch.nn.functional.cosine_similarity(src, dst, dim=-1)
-        return attention * (src * dst).sum(dim=-1)
+        r = (src * dst).sum(dim=-1)
+        return r
+        # # 使用注意力机制计算边的预测
+        # attention = torch.nn.functional.cosine_similarity(src, dst, dim=-1)
+        # return attention * (src * dst).sum(dim=-1)
         
     def forward(self, x, edge_index, edge_label_index):
         z = self.encode(x, edge_index)
