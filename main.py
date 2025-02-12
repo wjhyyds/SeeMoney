@@ -101,7 +101,7 @@ def train_10_fold():
         print('Data load succeed!')
 
         # 每一折都要实例化新的模型
-        model = GNN_NET(train_data.num_features, 32, 16).to(device)
+        model = GNN_NET(train_data.num_features, 32, 16,4).to(device)
         optimizer = torch.optim.Adam(params=model.parameters(), lr=0.01)
         criterion = torch.nn.BCEWithLogitsLoss()
         min_epochs = 10

@@ -1,1 +1,13 @@
 检查libffi是否安装 dpkg -l | grep libffi
+
+###指定python版本安装虚拟环境
+ conda create --name 2222 python==3.7
+
+1 查看conda支持的cuda版本
+conda search cudatoolkit --info
+2 wget里面的地址
+3 # 然后安装本地包
+conda install --use-local 本地cuda包所在的路径
+4 print(torch.version.cuda)
+
+5 conda install pyg -c pyg -c conda-forge

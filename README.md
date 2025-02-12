@@ -7,9 +7,9 @@ This is a Pytorch implementation of MixBroker, as described in the following:
 ## Requirements
 For hardware configuration, the experiments are conducted at Windows 10 with the Intel Core i7-9750H Six-Core CPU @ 2.60GHz, NVIDIA GeForce RTX 2070 GPU, and 16GB RAM.
 For software configuration, all model are implemented in
-- Python 3.7
-- Pytorch 1.9.1
-- CUDA 10.1
+- Python 3.7 `
+- Pytorch 1.9.1 `
+- CUDA 10.1 `
 - Numpy 1.21.6
 - Pandas 0.25.1
 - Pytorch-Geometric 2.1.0
