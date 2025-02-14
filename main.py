@@ -98,8 +98,8 @@ def train_10_fold():
         test_data = test_data.cuda()
         print(test_data)
 
-        print('Data load succeed!')
-
+        print('Data load succeed!###################')
+        print(train_data.num_features)
         # 每一折都要实例化新的模型
         model = GNN_NET(train_data.num_features, 32, 16,4).to(device)
         optimizer = torch.optim.Adam(params=model.parameters(), lr=0.01)

@@ -34,6 +34,7 @@ def load_10_fold_data(t_edge):
         edges.append((texId2index[id_1], texId2index[id_2]))
         labels.append(label)
     x = torch.tensor(x, dtype=torch.float32)
+    # print(edges)
     d_edges = np.array(edges)
     edges = torch.tensor(d_edges.T, dtype=torch.long)
     labels = torch.tensor(labels, dtype=torch.float32)

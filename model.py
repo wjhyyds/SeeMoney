@@ -15,12 +15,16 @@ class GNN_NET(torch.nn.Module):
         # 使用跳跃连接合并不同层的特征
         x = self.jk([x1, x2])
         x = self.lin(x)
-        return x
+        return x #68419x16
         
     def decode(self, z, edge_label_index):
-        src = z[edge_label_index[0]]
-        dst = z[edge_label_index[1]]
-        r = (src * dst).sum(dim=-1)
+        src = z[edge_label_index[0]] #184x16
+        dst = z[edge_label_index[1]] #184x16
+        r = (src * dst).sum(dim=-1)  #184x1
+        print("z",z.shape)
+        print("src",src.shape)
+        print("dst",dst.shape)
+        print("r",r)
         return r
         # # 使用注意力机制计算边的预测
         # attention = torch.nn.functional.cosine_similarity(src, dst, dim=-1)
