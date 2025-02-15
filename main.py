@@ -25,7 +25,7 @@ def seed_torch(seed):
     print('Success!')
 
 
-def mytest(model, data):
+def mytest(model, data,threshold):
     model.eval()
     with torch.no_grad():
         z = model.encode(data.x, data.edge_index)
@@ -34,7 +34,7 @@ def mytest(model, data):
     edge_index = data.edge_label_index.cpu().numpy()
     label_test = data.edge_label.cpu().numpy()
     out_np = out.cpu().numpy()
-    label_pred = np.where(out_np > 0.75, 1, 0)
+    label_pred = np.where(out_np > threshold, 1, 0)
 
     TP, FP, FN, TN = 0, 0, 0, 0
     for i in range(len(label_test)):
@@ -60,7 +60,7 @@ def mytest(model, data):
     return edge_index, out_np, accuracy, precision, recall, f_1, FPR, FNR, roc_auc, figure_time
 
 
-def train_10_fold():
+def train_10_fold(threshold):
     start = time.perf_counter()
     df_pos_data = pd.read_csv('./Dataset/Graph/train_pos_edge_10fold.csv')
     df_neg_data = pd.read_csv('./Dataset/Graph/train_neg_edge_10fold.csv')
@@ -87,7 +87,7 @@ def train_10_fold():
 
         train_data, names = load_10_fold_data(df_train)
         train_data = train_data.cuda()
-        print(train_data)
+        # print(train_data)
 
         test_neg_idx = neg_idx_test[fold]
         df_test_pos = df_pos_data.iloc[test_pos_idx]
@@ -96,10 +96,10 @@ def train_10_fold():
 
         test_data, names = load_10_fold_data(df_test)
         test_data = test_data.cuda()
-        print(test_data)
+        # print(test_data)
 
         print('Data load succeed!###################')
-        print(train_data.num_features)
+        # print(train_data.num_features)
         # 每一折都要实例化新的模型
         model = GNN_NET(train_data.num_features, 32, 16,4).to(device)
         optimizer = torch.optim.Adam(params=model.parameters(), lr=0.01)
@@ -126,7 +126,7 @@ def train_10_fold():
 
             # validation
             test_edge, test_out, test_accuracy, test_precision, test_recall, test_f_1, test_FPR, test_FNR, test_auc, \
-            test_figure_time = mytest(model, test_data)
+            test_figure_time = mytest(model, test_data,threshold)
 
             if epoch > min_epochs and test_f_1 > best_test_f_1:
                 best_epoch = epoch
@@ -138,7 +138,7 @@ def train_10_fold():
                 best_test_FNR = test_FNR
                 best_test_auc = test_auc
 
-        print('best_epoch {:03d} best_test_f_1 {:.4f}'.format(best_epoch, best_test_f_1))
+        # print('best_epoch {:03d} best_test_f_1 {:.4f}'.format(best_epoch, best_test_f_1))
         tmp_arr = [best_test_accuracy, best_test_precision, best_test_recall, best_test_f_1, best_test_FPR, best_test_FNR, best_test_auc]
         arr.insert(1, tmp_arr)
 
@@ -163,5 +163,13 @@ def train_10_fold():
 
 
 if __name__ == "__main__":
-    seed_torch(1029)
-    train_10_fold()
+    # seed_torch(1029)
+    # print(train_10_fold(0.75)['test_f_1'].mean())
+
+    
+    results = []
+    for threshold in [0.50, 0.55, 0.60, 0.65, 0.70, 0.75, 0.80, 0.85, 0.90, 0.95]:
+        seed_torch(1029)
+        results.append(train_10_fold(threshold)['test_f_1'].mean())
+        print("#################",threshold,results)
+    np.savetxt("result.txt",results)

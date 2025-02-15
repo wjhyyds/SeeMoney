@@ -21,10 +21,10 @@ class GNN_NET(torch.nn.Module):
         src = z[edge_label_index[0]] #184x16
         dst = z[edge_label_index[1]] #184x16
         r = (src * dst).sum(dim=-1)  #184x1
-        print("z",z.shape)
-        print("src",src.shape)
-        print("dst",dst.shape)
-        print("r",r)
+        # print("z",z.shape)
+        # print("src",src.shape)
+        # print("dst",dst.shape)
+        # print("r",r)
         return r
         # # 使用注意力机制计算边的预测
         # attention = torch.nn.functional.cosine_similarity(src, dst, dim=-1)
