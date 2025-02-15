@@ -61,6 +61,7 @@ def mytest(model, data,threshold):
 
 
 def train_10_fold(threshold):
+    seed_torch(1029)
     start = time.perf_counter()
     df_pos_data = pd.read_csv('./Dataset/Graph/train_pos_edge_10fold.csv')
     df_neg_data = pd.read_csv('./Dataset/Graph/train_neg_edge_10fold.csv')
@@ -166,10 +167,11 @@ if __name__ == "__main__":
     # seed_torch(1029)
     # print(train_10_fold(0.75)['test_f_1'].mean())
 
-    
+
     results = []
     for threshold in [0.50, 0.55, 0.60, 0.65, 0.70, 0.75, 0.80, 0.85, 0.90, 0.95]:
-        seed_torch(1029)
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache() #清一些缓存防止重复训练
         results.append(train_10_fold(threshold)['test_f_1'].mean())
         print("#################",threshold,results)
     np.savetxt("result.txt",results)
