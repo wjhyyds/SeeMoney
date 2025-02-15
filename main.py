@@ -8,7 +8,7 @@ import pandas as pd
 import sklearn.metrics as sm
 import torch.nn.functional as F
 from torch_geometric.data import Data
-from model import GNN_NET
+from model import GNN_NET, AdvanceGNN
 from data_process import load_10_fold_data
 from sklearn.model_selection import KFold, StratifiedKFold, StratifiedShuffleSplit
 
@@ -102,7 +102,8 @@ def train_10_fold(threshold):
         print('Data load succeed!###################')
         # print(train_data.num_features)
         # 每一折都要实例化新的模型
-        model = GNN_NET(train_data.num_features, 32, 16,4).to(device)
+        # model = AdvanceGNN(train_data.num_features, 32, 16,4).to(device)
+        model = GNN_NET(train_data.num_features, 32, 16).to(device)
         optimizer = torch.optim.Adam(params=model.parameters(), lr=0.01)
         criterion = torch.nn.BCEWithLogitsLoss()
         min_epochs = 10
@@ -174,4 +175,4 @@ if __name__ == "__main__":
             torch.cuda.empty_cache() #清一些缓存防止重复训练
         results.append(train_10_fold(threshold)['test_f_1'].mean())
         print("#################",threshold,results)
-    np.savetxt("result.txt",results)
+    np.savetxt("result_GAT.txt",results)
