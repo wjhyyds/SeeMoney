@@ -4,12 +4,14 @@ import os
 
 # 设置阈值
 thresholds = np.arange(0.50, 1.0, 0.05)
+thresholds = np.arange(2, 11, 1)
 
 # 创建图形
 plt.figure(figsize=(12, 8))
 
 # 读取result_of_threshold文件夹下的所有txt文件
 folder_path = "result_of_threshold"
+folder_path = "result_of_K"
 for filename in os.listdir(folder_path):
     if filename.endswith(".txt"):
         file_path = os.path.join(folder_path, filename)
@@ -43,5 +45,6 @@ plt.legend(fontsize=10, loc="best")
 # 调整布局
 plt.tight_layout()
 # 保存图形
-plt.savefig("threshold_f1_plot_comparison.png", dpi=300, bbox_inches="tight")
+# plt.savefig("threshold_f1_plot_comparison.png", dpi=300, bbox_inches="tight")
+plt.savefig("F1_f1_plot_comparison.png", dpi=300, bbox_inches="tight")
 plt.close()

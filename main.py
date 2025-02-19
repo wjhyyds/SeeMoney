@@ -60,7 +60,7 @@ def mytest(model, data,threshold):
     return edge_index, out_np, accuracy, precision, recall, f_1, FPR, FNR, roc_auc, figure_time
 
 
-def train_10_fold(threshold):
+def train_10_fold(threshold,K):
     seed_torch(1029)
     start = time.perf_counter()
     df_pos_data = pd.read_csv('./Dataset/Graph/train_pos_edge_10fold.csv')
@@ -74,13 +74,13 @@ def train_10_fold(threshold):
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     print(device)
 
-    skf = KFold(n_splits=10, shuffle=True, random_state=42)
+    skf = KFold(n_splits=K, shuffle=True, random_state=42)
     for fold, (train_neg_idx, test_neg_idx) in enumerate(skf.split(df_neg_data)):
         neg_idx_train.append(train_neg_idx)
         neg_idx_test.append(test_neg_idx)
 
     for fold, (train_pos_idx, test_pos_idx) in enumerate(skf.split(df_pos_data)):
-        print('**' * 10, 'The', fold + 1, 'Fold', 'ing....', '**' * 10)
+        print('**' * 10, 'The', fold + 1, 'Fold', 'ing....', '**' ,"Total:", K)
         train_neg_idx = neg_idx_train[fold]
         df_train_pos = df_pos_data.iloc[train_pos_idx]
         df_train_neg = df_neg_data.iloc[train_neg_idx]
@@ -102,8 +102,8 @@ def train_10_fold(threshold):
         print('Data load succeed!###################')
         # print(train_data.num_features)
         # 每一折都要实例化新的模型
-        # model = AdvanceGNN(train_data.num_features, 32, 16,4).to(device)
-        model = GNN_NET(train_data.num_features, 32, 16).to(device)
+        model = AdvanceGNN(train_data.num_features, 32, 16,4).to(device)
+        # model = GNN_NET(train_data.num_features, 32, 16).to(device)
         optimizer = torch.optim.Adam(params=model.parameters(), lr=0.01)
         criterion = torch.nn.BCEWithLogitsLoss()
         min_epochs = 10
@@ -166,13 +166,20 @@ def train_10_fold(threshold):
 
 if __name__ == "__main__":
     # seed_torch(1029)
-    # print(train_10_fold(0.75)['test_f_1'].mean())
-
+    # train_10_fold(0.50,10)
 
     results = []
-    for threshold in [0.50, 0.55, 0.60, 0.65, 0.70, 0.75, 0.80, 0.85, 0.90, 0.95]:
+    for K in [2,3,4,5, 6, 7, 8, 9, 10]:
         if torch.cuda.is_available():
             torch.cuda.empty_cache() #清一些缓存防止重复训练
-        results.append(train_10_fold(threshold)['test_f_1'].mean())
-        print("#################",threshold,results)
-    np.savetxt("result_GAT.txt",results)
+        results.append(train_10_fold(0.80, K)['test_f_1'].mean())
+        print("#################",K,results)
+    np.savetxt(f"./result_of_K/AdvanceGNN_0.80.txt",results)
+
+    # results = []
+    # for threshold in [0.50, 0.55, 0.60, 0.65, 0.70, 0.75, 0.80, 0.85, 0.90, 0.95]:
+    #     if torch.cuda.is_available():
+    #         torch.cuda.empty_cache() #清一些缓存防止重复训练
+    #     results.append(train_10_fold(threshold)['test_f_1'].mean())
+    #     print("#################",threshold,results)
+    # np.savetxt("./result_of_K/result_GAT.txt",results)

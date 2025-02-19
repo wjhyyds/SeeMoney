@@ -25,14 +25,14 @@ def concat_all():
     print('Total Time: %s' % (end - start))
 
 
-def unique_address():
+def unique_address():#统计存取一共多少节点
     start = time.perf_counter()
     df1 = pd.read_csv('./Dataset/Graph/ETH.csv')
     df1_deposit = df1[df1['Method'] == 'Deposit']
     df1_withdraw = df1[df1['Method'] == 'Withdraw']
-    print(len(set(df1_deposit['From'])))
-    print(len(set(df1_withdraw['From'])))
-    print(len(set(df1['From'])))
+    print(len(set(df1_deposit['From'])))#30823
+    print(len(set(df1_withdraw['From'])))#44814
+    print(len(set(df1['From'])))#68419 有一点重复
 
     end = time.perf_counter()
     print('Total Time: %s' % (end - start))

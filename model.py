@@ -39,10 +39,10 @@ class GNN_NET(torch.nn.Module):
         super().__init__()
         # self.conv1 = GCNConv(in_channels, hidden_channels)
         # self.conv2 = GCNConv(hidden_channels, out_channels)
-        self.conv1 = GATConv(in_channels, hidden_channels)
-        self.conv2 = GATConv(hidden_channels, out_channels)
-        # self.conv1 = SAGEConv(in_channels, hidden_channels)
-        # self.conv2 = SAGEConv(hidden_channels, out_channels)
+        # self.conv1 = GATConv(in_channels, hidden_channels)
+        # self.conv2 = GATConv(hidden_channels, out_channels)
+        self.conv1 = SAGEConv(in_channels, hidden_channels)
+        self.conv2 = SAGEConv(hidden_channels, out_channels)
 
     def encode(self, x, edge_index):
         x = self.conv1(x, edge_index).relu()
